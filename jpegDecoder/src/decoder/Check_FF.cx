@@ -5,24 +5,25 @@
 package decoder;
 
 task Check_FF {
-	in bool header_select_i;
+	//in bool header_select_i;
 
 	in sync u8 data_i;
-	out sync u8 data_o;
-	
-	out sync u4 context_o;
-	out sync bool eoi_o;
+	out u8 data_o;
+	out u4 context_o;
+	out bool datavalid_o;
+//	out sync bool eoi_o;
 	
 	u8 data;
 	bool seenFF, seenFF_D;
 	bool eoi, eoi_D, eoi_for_context;
-	bool header_valid;
+	bool datavalid;
+//	bool header_valid;
 	u4 context;
 	
 	void loop() {
 		u8 d = data_i.read;
 		seenFF_D = seenFF;
-		
+		print ("d1:", d);
 		if (d == 0xFF)
 		{
 			seenFF = true;
@@ -38,9 +39,15 @@ task Check_FF {
 				data = 0x0;
 			} else {
 				data = data_i.read;
+				print ("d2:", data);
 			}
 		}
 		data_o.write(data);
+
+		context[3] = eoi?0x1:0x0;
+		context_o.write(context);
 		
+		datavalid = !seenFF_D || eoi;
+		datavalid_o.write(datavalid);
 	}
 }
