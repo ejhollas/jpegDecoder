@@ -5,19 +5,13 @@
 package decoder;
 
 task Check_FF {
-	in bool reset_i;
-	in bool header_valid_i;
 	in bool header_select_i;
 
-	in u8 data_i;
-	out u8 data_o;
+	in sync u8 data_i;
+	out sync u8 data_o;
 	
-	out u4 context_o;
-	out bool eoi_o;
-
-	// flow control
-	in bool datavalid_i, ready_i;
-	out bool datavalid_o, ready_o;
+	out sync u4 context_o;
+	out sync bool eoi_o;
 	
 	u8 data;
 	bool seenFF, seenFF_D;
@@ -25,26 +19,9 @@ task Check_FF {
 	bool header_valid;
 	u4 context;
 	
-	// flow control
-	bool datavalid;
-	bool reset;
-	bool ce;
-	
-	void setup() {
-		reset = 1;
-	}
-	
 	void loop() {
-		ce = datavalid_i.read && ready_i.read;
-		datavalid = (ce && seenFF && header_valid && header_valid_i.read)
-					|| (context[3] && ready_i.read);
-		datavalid_o.write(datavalid);
-		ready_o.write(ce);
-		reset = reset_i.read;
-		context_o.write(context);
-		
 		u8 d = data_i.read;
-		eoi = 0;
+		seenFF_D = seenFF;
 		
 		if (d == 0xFF)
 		{
@@ -63,13 +40,7 @@ task Check_FF {
 				data = data_i.read;
 			}
 		}
+		data_o.write(data);
 		
-		if (datavalid || reset) {
-			eoi_for_context = false;
-		} else {
-			if (eoi) {
-				eoi_for_context = true;
-			}
-		}
 	}
 }

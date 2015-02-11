@@ -20,11 +20,7 @@ network JpegTest {
 			check_ff.data_i.write(0x00); // FF	
 			check_ff.data_i.write(0xFF);
 			check_ff.data_i.write(0xD9); // EOI
-			check_ff.datavalid_i.write(true);
-			check_ff.reset_i.write(false);	
-			check_ff.ready_i.write(true);
 			check_ff.header_select_i.write(false);
-			check_ff.header_valid_i.write(true);
 		}
 	};
 	
@@ -33,27 +29,21 @@ network JpegTest {
 	expected = new task {
 		void setup() {
 			print("data[", check_ff.data_o.read(),"] valid[", 
-				check_ff.datavalid_o.read,"] context[",
 				check_ff.context_o.read,"]"
 			);
 			print("data[", check_ff.data_o.read(),"] valid[", 
-				check_ff.datavalid_o.read,"] context[",
 				check_ff.context_o.read,"]"
 			);
 			print("data[", check_ff.data_o.read(),"] valid[", 
-				check_ff.datavalid_o.read,"] context[",
 				check_ff.context_o.read,"]"
 			);
 			print("data[", check_ff.data_o.read(),"] valid[", 
-				check_ff.datavalid_o.read,"] context[",
 				check_ff.context_o.read,"]"
 			);
 			print("data[", check_ff.data_o.read(),"] valid[", 
-				check_ff.datavalid_o.read,"] context[",
 				check_ff.context_o.read,"]"
 			);
 			print("data[", check_ff.data_o.read(),"] valid[", 
-				check_ff.datavalid_o.read,"] context[",
 				check_ff.context_o.read,"]"
 			);
 		}
